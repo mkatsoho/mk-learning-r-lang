@@ -1,0 +1,213 @@
+---
+title: "MK Learning R"
+output: html_notebook
+---
+
+
+### Tutorial for beginners
+
+w3school - https://www.w3schools.com/r/default.asp
+
+w3school 中文 - https://www.w3cschool.cn/r/
+
+geeksforgeeks (too verbose) - https://www.geeksforgeeks.org/r-tutorial/?ref=lbp
+
+
+### Setup R and IDE
+
+Two steps, install R and install IDE.
+
+Refer to https://posit.co/download/rstudio-desktop/
+
+
+### The diffrences among basic types
+
+```{r}
+# the vector: the basic type in R, every element is the same datatype
+vector1 <- c(1,2,3)
+class(vector1)  # numeric
+
+# the most flexible and complex datatype, quite similar as JavaScript's object
+list1 <- list(c(1,2,3)) # it could also be a list-like datatype
+class(list1)          # list
+sublist1 <- list1[1]  # [1] returns a sublist, instead of a element
+element1 <- list1[[1]]  # [[1]] returns a element
+
+# the matrix and the array are similar in some means. Its is J*K, or J*K*L one-dimension elements, logically organized as the dimension c(J, K) or c(J, K, L)
+matrix()  # TODO
+
+array()   # TODO
+
+# the data frame is a table, with columns
+df1 <- data.frame(id = c(1:3), name = c("Michael", "Jeffery", "Catty"))
+class(df1)  # data type is "data.frame"
+
+df1["id"] # get one column, "id"
+df1[1]  # get the first col
+df1[1,] # get the first row
+df1[1, "name"]  # get one cell, "Michael"
+
+df1 <- cbind(df1, data.frame(score = c(95, 60.1, 97.89))) # add one clone
+df1 <- rbind(df1, c(id=5, name="NewB", score=12.3456789)) # add one row
+df1
+
+# A N-item factor is both a N-length vector and a M-length-unique-value vector(levels)  
+fact1 <- factor(c("Jazz", "Rock", "Classic", "Classic", "Pop", "Jazz", "Rock", "Jazz")) # N items
+class(fact1)    # factor
+levels(fact1)   # M unique values, ordered
+fact1
+
+# customized levels, add "other"
+fact2 <- factor(c("Jazz", "Rock", "Classic", "Classic", "Pop", "Jazz", "Rock", "Jazz"), levels = c("Classic", "Jazz", "Pop", "Rock", "Other"))   # N items
+fact2
+```
+
+### How to handle json object
+
+```{r}
+# define an object
+data_list <- list(
+  name = "John Doe",
+  age = 30,
+  interests = c("Photography", "Reading", "Mountain Biking"),
+  address = list(
+    street = "123 Elm St",
+    city = "Somewhere",
+    zip = "90210"
+  )
+)
+
+# Convert a json object to a pretty string
+pretty_json_string <- toJSON(data_list, pretty=2, auto_unbox = TRUE)
+# pretty_json_string <- toJSON(data_list, pretty = TRUE)
+
+# show json string
+cat(pretty_json_string)
+
+# read a json object from a string
+json_obj <- toJSON(pretty_json_string)
+
+# read a json object from a file
+a_file_path <- ""
+json_obj <- fromJSON(a_file_path)
+
+# get object's property
+print(json_obj$interests[[1]])
+
+# write string to a file
+writeLines(pretty_json_string, a_file_path)
+```
+
+### How to use regexp
+
+```{r}
+# solution 1
+filename <- "abc_003.json"
+digits <- sub(".*_([0-9]+)\\..*", "\\1", filename)
+print(digits)
+
+# solution 2
+filename <- "abc_003.json"
+match_info <- regexpr("[0-9]+", filename)
+digits <- regmatches(filename, match_info)
+print(digits)
+
+# solution 3 - stringr library
+library(stringr)
+filename <- "abc_003.json"
+digits <- str_extract(filename, "[0-9]+")
+print(digits)
+```
+
+### Find all files in a folder
+
+```{r}
+folder_path <- "."
+pattern <- "\\.py$"
+
+# List all files that match the pattern in the specified directory
+txt_files <- list.files(path = folder_path, pattern = pattern, full.names = FALSE)
+print(txt_files)
+```
+
+
+### How to run a function for many times (against a group of data)
+
+#### replicate() is run expression for n times
+```{r}
+replicate(3, "abc")  # return a vector of 3 expression results
+```
+
+#### *apply(): apply a function against the data X, which could be a vector, list, array, data frame, or matrix
+
+```{r}
+# TODO
+```
+
+### Read/write a data file
+
+
+### Error handling
+
+### Object oriented - skipped
+
+
+
+
+
+
+
+### How to install & use a library
+```{r}
+if (!require(dplyr)) {
+  install.packages("dplyr")
+  library(dplyr)
+} else {
+  library(dplyr)
+}
+```
+
+### How to enable function help in a package (like javadoc)
+
+- add help doc lines, refer to a template
+- only support help doc for a package
+- do NOT support a single function's help or the docstring as python
+- use the scripts below to generate help docs for the current folder
+- generated doc files like `man/*.Rd`
+- refer to `tools/gen_docs.sh`
+
+```{r}
+# Install roxygen2 if it's not already installed
+if (!requireNamespace("roxygen2", quietly = TRUE)) {
+  install.packages("roxygen2")
+}
+
+# Load roxygen2
+library(roxygen2)
+
+# generate docs
+roxygen2::roxygenise()
+```
+
+### How to build/install a package
+
+```{bash}
+# build a package
+R CMD build <Pkg_Folder_Name>
+# install a package
+R CMD install <Pkg_Folder_Name_*.tar.gz> 
+# refer to `tools/gen_pkg.sh`
+```
+
+
+### Use library dplyr to process data frame as a table (or as SQL)
+### Use library ggplot2 to draw graph
+### Use library tidyverse
+### Use library grid and lattice to draw chart
+### Use library shiny to construct html and http server
+### Use library tidyr
+### Use library munging
+
+### Statistics
+
+### Data visualization
